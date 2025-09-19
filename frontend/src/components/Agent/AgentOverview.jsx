@@ -7,8 +7,12 @@ const AgentOverview = () => {
   const { loans } = useSelector((state) => state.loans)
   const { user } = useSelector((state) => state.auth)
 
-  // Filter loans assigned to this agent
-  const myLoans = loans.filter((loan) => loan.assignedAgent?._id === user?.id)
+  // Filter loans assigned to this agent (handles both populated and raw ObjectId)
+  const myLoans = loans.filter((loan) => {
+    const assigned = loan.assignedAgent
+    const assignedId = typeof assigned === "string" ? assigned : assigned?._id
+    return assignedId === user?.id
+  })
 
   // Calculate statistics
   const totalAssigned = myLoans.length

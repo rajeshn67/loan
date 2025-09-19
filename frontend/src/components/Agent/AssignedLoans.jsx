@@ -12,8 +12,12 @@ const AssignedLoans = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
 
-  // Filter loans assigned to this agent
-  const myLoans = loans.filter((loan) => loan.assignedAgent?._id === user?.id)
+  // Filter loans assigned to this agent (handles both populated and raw ObjectId)
+  const myLoans = loans.filter((loan) => {
+    const assigned = loan.assignedAgent
+    const assignedId = typeof assigned === "string" ? assigned : assigned?._id
+    return assignedId === user?.id
+  })
 
   const filteredLoans = myLoans.filter((loan) => {
     const matchesSearch =
